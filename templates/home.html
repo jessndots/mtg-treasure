@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    MTG Treasure
+{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <h1>{{set.name}}</h1>
+    <p class="fst-italic">THE NEWEST MTG EXPANSION SET</p> <br>
+    <div class="d-flex flex-wrap justify-content-between bd-highlight mb-3">
+        {% for card in mythics if card.image_url %}
+        <div class="p-2 bd-highlight card">
+            <a href="/cards/{{card.id}}">    
+                <img class="card" src={{card.image_url}} alt="">
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    </ul>
+</div>
+{% endblock %}
