@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{card.name}}
+{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <br>
+    <div class="d-flex justify-content-between" >
+        <div>
+            <p class="h1 mx-2">{{card.name}}</p>
+            {% if card.flavor_text %}
+                <p class="fst-italic mx-5">{{card.flavor_text}}</p>
+            {% endif %}
+        </div>
+        <div class="d-flex justify-content-end">
+            <!-- fix links -->
+            <form method="POST" action="/users/inventory/add/{{card.id}}" class="form-inline">
+                <button class="btn btn-primary ml-2">Add to Inventory</button>
+            </form>
+            <form method="POST" action="/users/wishlist/add/{{card.id}}" class="form-inline">
+                <button class="btn btn-primary mx-2">Add to Wishlist</button>
+            </form>
+            <div class="dropdown m-1">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Add to Deck
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    {% for deck in g.user.decks %}
+                    <li><a class="dropdown-item" href="#">{{deck.name}}</a></li>
+                    {% endfor %}
+                </ul>
+              </div>
+            
+        </div>
+    </div>
+    
+   
+    <div class="d-flex">
+        <div class="border border-white flex-fill card" >
+            <img  src="{{api['image_uris']['normal']}}" alt="Image of {{card.name}} card.">
+        </div>
+        <div class="w-75 m-2 flex-fill border border-dark border-3">
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Set</p>
+                </div>
+                <div class="col ">
+                    <span>
+                        <p>{{card.set}}</p>
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Rarity</p>
+                </div>
+                <div class="col">
+                    <span>
+                        <p class="card-symbol">
+                            {{card.rarity}}
+                        </p>
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Price in USD</p>
+                </div>
+                <div class="col">
+                    <span>
+                        <p class="card-symbol">
+                            ${{api['prices']['usd']}}
+                        </p>
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Type</p>
+                </div>
+                <div class="col">
+                    <span>
+                        <p class="card-symbol">
+                            {{card.type_line}}
+                        </p>
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            {% if card.mana_cost %}
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Mana Cost</p>
+                </div>
+                <div class="col">
+                    <span>
+                        {% for sym in card.mana_cost.split() %}
+                            <img style="width: 20px" src="{{card.get_icon_uri(sym)}}">
+                        {% endfor %}
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+            <hr class="m-0">
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Rules Text</p>
+                </div>
+                <div class="col">
+                    <span>
+                        {% for line in card.rules_text.split('\n') %}
+                            {% if '{' in line  %}
+                                <p>
+                                    {% for word in line.split() %}
+                                        {% if card.get_icon_uri(word) %}
+                                            <img src="{{card.get_icon_uri(word)}}" alt="" style="width: 15px">
+                                        {% endif %}
+                                        {% if not card.get_icon_uri(word) %}
+                                            {{word}}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if '{' not in line %}
+                                <p >{{line}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            {% if card.power %}
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Power / Toughness</p>
+                </div>
+                <div class="col">
+                    <span>
+                        <p>{{card.power}}/{{card.toughness}}</p>
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            {% endif %}
+            {% if card.loyalty %}
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Loyalty</p>
+                </div>
+                <div class="col">
+                    <span>
+                        <p>{{card.loyalty}}</p>
+                    </span>
+                </div>
+            </div>
+            <hr class="m-0">
+            {% endif %}
+            
+            <div class="row justify-content-start p-2">
+                <div class="col-2">
+                    <p class="fw-bold">Artist</p>
+                </div>
+                <div class="col ">
+                    <span>
+                        <p>{{card.artist}}</p>
+                    </span>
+                </div>
+            </div>
+            
+        </div>
+
+        
+    </div>
+    <br>
+    {% if rulings %}
+        <hr>
+        <p class="h2">Rulings</p>
+        <div class="m-4">
+            {% for ruling in rulings %}
+                <p class="fw-bold m-0">{{ruling.published_at}}</p>
+                <p>{{ruling.comment}}</p>
+                <br>
+            {% endfor %}
+        </div>   
+    {% endif %}
+    
+</div>
+{% endblock %}

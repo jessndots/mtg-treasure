@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-lg">
+<div class="container-fluid m-5">
     <h1>{{set.name}}</h1>
     <p class="fst-italic">THE NEWEST MTG EXPANSION SET</p> <br>
-    <div class="d-flex flex-wrap justify-content-between bd-highlight mb-3">
-        {% for card in mythics if card.image_url %}
-        <div class="p-2 bd-highlight card">
+    <div class="d-flex flex-wrap bd-highlight mb-3">
+        {% for card in cards if card.image_uris %}
+        <div class="m-2 bd-highlight card card-hover" style="width: 300px">
             <a href="/cards/{{card.id}}">    
-                <img class="card" src={{card.image_url}} alt="">
+                <img class="mw-100" src={{card.image_uris.normal}} alt="">
             </a>
         </div>
         {% endfor %}
